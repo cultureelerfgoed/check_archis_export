@@ -7,6 +7,7 @@ from collections import Counter
 import pandas as pd
 import sys
 
+
 class ElementCounter(ContentHandler):
     def __init__(self, filter_wkt=False):
         self.counter = Counter()
@@ -48,8 +49,7 @@ class ElementCounter(ContentHandler):
 
     def endElement(self, name):
         if self.filter_wkt and name == 'archeologischOnderzoeksgebied':
-            if not self.archeologisch_has_wkt:
-                # Alleen toevoegen aan eindresultaat als geen WKT
+            if self.archeologisch_has_wkt:
                 self.counter += self.temp_counter
 
             # Reset AO-context

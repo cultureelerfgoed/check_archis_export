@@ -21,24 +21,24 @@ class PadTeller(ContentHandler):
 
         if self.filter_wkt:
             if name == 'archeologischOnderzoeksgebied':
-                self.inside_ao = True
-                self.ao_has_wkt = False
-                self.temp_counter = Counter()
+                self.inside_ao = True  #! begin van AO-blok
+                self.ao_has_wkt = False  #! reset WKT-detectie
+                self.temp_counter = Counter()  #! tijdelijke teller voor AO-blok
             elif name == 'WKT' and self.inside_ao:
-                self.ao_has_wkt = True
+                self.ao_has_wkt = True  #! markeer dat WKT gevonden is binnen AO-blok
 
             if self.inside_ao:
-                self.temp_counter[huidig_pad] += 1
+                self.temp_counter[huidig_pad] += 1  #! tellen binnen AO-blok
             else:
-                self.counter[huidig_pad] += 1
+                self.counter[huidig_pad] += 1  #! tellen buiten AO-blok
         else:
             self.counter[huidig_pad] += 1
 
     def endElement(self, name):
         if self.filter_wkt and name == 'archeologischOnderzoeksgebied':
-            if not self.ao_has_wkt:
-                self.counter += self.temp_counter
-            self.inside_ao = False
+            if self.ao_has_wkt:
+                self.counter += self.temp_counter  #! voeg alleen toe als WKT aanwezig
+            self.inside_ao = False  #! einde van AO-blok
             self.ao_has_wkt = False
             self.temp_counter = Counter()
         self.path_stack.pop()
